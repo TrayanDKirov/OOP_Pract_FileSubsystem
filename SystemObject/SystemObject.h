@@ -13,4 +13,7 @@ protected:
 
 public:
 
+	virtual SystemObject* clone() = 0;
+	
+	virtual ~SystemObject() = default;
 };
