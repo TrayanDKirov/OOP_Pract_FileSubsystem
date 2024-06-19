@@ -1,13 +1,13 @@
-#include "SystemObjectContainer.h"
+#include "CommandContainer.h"
 
-void SystemObjectContainer::resize(size_t newCapacity)
+void CommandContainer::resize(size_t newCapacity)
 {
 	if (newCapacity < this->size)
 	{
 		throw std::length_error("NewCapacity in SystemObjectContainer::resize() is less than size");
 	}
 
-	SystemObject** newArr = new SystemObject* [newCapacity] { nullptr };
+	Command** newArr = new Command* [newCapacity] { nullptr };
 	for (size_t i = 0; i < this->size; i++)
 	{
 		newArr[i] = this->data[i];
@@ -18,7 +18,7 @@ void SystemObjectContainer::resize(size_t newCapacity)
 	this->capacity = newCapacity;
 }
 
-void SystemObjectContainer::moveFrom(SystemObjectContainer&& other) noexcept
+void CommandContainer::moveFrom(CommandContainer&& other) noexcept
 {
 	this->data = other.data;
 	other.data = nullptr;
@@ -29,19 +29,19 @@ void SystemObjectContainer::moveFrom(SystemObjectContainer&& other) noexcept
 	this->capacity = other.capacity;
 	other.capacity = 0;
 }
-void SystemObjectContainer::copyFrom(const SystemObjectContainer& other)
+void CommandContainer::copyFrom(const CommandContainer& other)
 {
 	this->capacity = other.capacity;
 	this->size = other.size;
 
-	this->data = new SystemObject* [this->capacity] { nullptr };
+	this->data = new Command* [this->capacity] { nullptr };
 
 	for (size_t i = 0; i < this->size; i++)
 	{
 		this->data[i] = other.data[i]->clone();
 	}
 }
-void SystemObjectContainer::free() noexcept
+void CommandContainer::free() noexcept
 {
 	for (size_t i = 0; i < this->size; i++)
 	{
@@ -54,18 +54,18 @@ void SystemObjectContainer::free() noexcept
 	this->capacity = 0;
 }
 
-SystemObjectContainer::SystemObjectContainer()
+CommandContainer::CommandContainer()
 {
 	this->size = 0;
 	this->capacity = 8;
-	this->data = new SystemObject* [this->capacity] { nullptr };
+	this->data = new Command* [this->capacity] { nullptr };
 }
 
-SystemObjectContainer::SystemObjectContainer(const SystemObjectContainer& other)
+CommandContainer::CommandContainer(const CommandContainer& other)
 {
 	copyFrom(other);
 }
-SystemObjectContainer& SystemObjectContainer::operator=(const SystemObjectContainer& other)
+CommandContainer& CommandContainer::operator=(const CommandContainer& other)
 {
 	if (this != &other)
 	{
@@ -75,11 +75,11 @@ SystemObjectContainer& SystemObjectContainer::operator=(const SystemObjectContai
 	return *this;
 }
 
-SystemObjectContainer::SystemObjectContainer(SystemObjectContainer&& other) noexcept
+CommandContainer::CommandContainer(CommandContainer&& other) noexcept
 {
 	moveFrom(std::move(other));
 }
-SystemObjectContainer& SystemObjectContainer::operator=(SystemObjectContainer&& other) noexcept
+CommandContainer& CommandContainer::operator=(CommandContainer&& other) noexcept
 {
 	if (this != &other)
 	{
@@ -89,12 +89,12 @@ SystemObjectContainer& SystemObjectContainer::operator=(SystemObjectContainer&& 
 	return *this;
 }
 
-SystemObjectContainer::~SystemObjectContainer() noexcept
+CommandContainer::~CommandContainer() noexcept
 {
 	free();
 }
 
-void SystemObjectContainer::add(SystemObject* item)
+void CommandContainer::add(Command* item)
 {
 	if (this->size == this->capacity)
 	{
@@ -103,7 +103,7 @@ void SystemObjectContainer::add(SystemObject* item)
 
 	this->data[this->size++] = item;
 }
-void SystemObjectContainer::remove()
+void CommandContainer::remove()
 {
 	delete this->data[this->size - 1];
 	this->data[this->size - 1] = nullptr;
@@ -115,7 +115,7 @@ void SystemObjectContainer::remove()
 		resize(this->capacity / 2);
 	}
 }
-void SystemObjectContainer::remove(size_t index)
+void CommandContainer::remove(size_t index)
 {
 	for (size_t i = index; i < this->size - 1; i++)
 	{
@@ -125,7 +125,7 @@ void SystemObjectContainer::remove(size_t index)
 	remove();
 }
 
-const SystemObject* SystemObjectContainer::operator[](size_t index) const
+const Command* CommandContainer::operator[](size_t index) const
 {
 	if (index >= this->size)
 	{
@@ -134,7 +134,7 @@ const SystemObject* SystemObjectContainer::operator[](size_t index) const
 
 	return this->data[index];
 }
-SystemObject* SystemObjectContainer::operator[](size_t index)
+Command* CommandContainer::operator[](size_t index)
 {
 	if (index >= this->size)
 	{
@@ -144,11 +144,11 @@ SystemObject* SystemObjectContainer::operator[](size_t index)
 	return this->data[index];
 }
 
-size_t SystemObjectContainer::getSize() const
+size_t CommandContainer::getSize() const
 {
 	return this->size;
 }
-size_t SystemObjectContainer::getCapacity() const
+size_t CommandContainer::getCapacity() const
 {
 	return this->capacity;
 }

@@ -31,4 +31,7 @@ public:
 
 	const SystemObject* operator[](size_t index) const;
 	SystemObject* operator[](size_t index);
+
+	size_t getSize() const;
+	size_t getCapacity() const;
 };

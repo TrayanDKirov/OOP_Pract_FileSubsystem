@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "../MyString/MyString.h"
 #include "../DateAndTime/DateAndTime.h"
 
@@ -13,7 +14,7 @@ protected:
 
 public:
 
-	virtual SystemObject* clone() = 0;
-	
+	virtual SystemObject* clone() const = 0;
+	virtual void print() const = 0;
 	virtual ~SystemObject() = default;
 };
