@@ -1,19 +1,18 @@
 #pragma once
 #include "SystemObject.h"
+#include "SystemObjectContainer.h"
 
 class Directory : public SystemObject
 {
-public:
+	SystemObjectContainer arrOfSystemObjects;
 
-	SystemObject* clone() const override
-	{
-		return new Directory(*this);
-	}
-	
-	void print() const override
-	{
-		std::cout << "Directory" << std::endl;
-	}
+public: 
+
+	SystemObject* clone() const override;
+
+	void loadFromDataFile(const MyString& filePath) override;
+	void saveToDataFile(const MyString& filePath) override;
+
 
 	~Directory() override = default;
 };

@@ -15,6 +15,9 @@ protected:
 public:
 
 	virtual SystemObject* clone() const = 0;
-	virtual void print() const = 0;
+
+	virtual void loadFromDataFile(const MyString& filePath) = 0;
+	virtual void saveToDataFile(const MyString& filePath) = 0;
+
 	virtual ~SystemObject() = default;
 };

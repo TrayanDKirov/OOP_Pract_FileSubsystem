@@ -3,7 +3,7 @@
 
 namespace GLOBAL_CONSTS_DATE
 {
-	const unsigned MIN_MOUNTH = 0;
+	const unsigned MIN_MOUNTH = 1;
 	const unsigned MAX_MOUNTH = 12;
 }
 

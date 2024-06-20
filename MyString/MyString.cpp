@@ -230,18 +230,6 @@ std::istream& operator>>(std::istream& is, MyString& str)
 	return is;
 }
 
-void MyString::readFromBinaryFile(const MyString& filePath)
-{
-	std::ifstream file(filePath.c_str(), std::ios::binary | std::ios::in);
-	if (!file.is_open())
-	{
-		throw std::runtime_error("File did not open(In MyString::readFromBinaryFile()). ");
-	}
-
-	readFromBinaryStream(file);
-	file.close();
-}
-
 MyString MyString::subStr(size_t from, size_t length) const
 {
 	if (from + length - 1 >= getLen())
@@ -256,13 +244,26 @@ MyString MyString::subStr(size_t from, size_t length) const
 	return result;
 }
 
+void MyString::readFromBinaryFile(const MyString& filePath)
+{
+	std::ifstream file(filePath.c_str(), std::ios::binary | std::ios::in);
+	if (!file.is_open())
+	{
+		throw std::runtime_error("File did not open(In MyString::readFromBinaryFile()). ");
+	}
+
+	readFromBinaryStream(file);
+	file.close();
+}
+
+
 void MyString::readFromBinaryStream(std::ifstream& ifs)
 {
-	size_t sizeOfFile = getSizeOfFile(ifs);
-	size_t sizeToRead = sizeOfFile - ifs.tellg();
+	size_t sizeToRead;
+	ifs.read(reinterpret_cast<char*>(sizeToRead), sizeof(sizeToRead));
 	resize(getCapacityNeeded(sizeToRead));
 
-	ifs.read((char*)(this->data), sizeToRead * sizeof(char));
+	ifs.read(reinterpret_cast<char*>(this->data), sizeToRead * sizeof(char));
 
 	this->len = sizeToRead;
 	this->data[this->len] = '\0';
