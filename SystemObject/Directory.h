@@ -10,8 +10,8 @@ public:
 
 	SystemObject* clone() const override;
 
-	void loadFromDataFile(const MyString& filePath) override;
-	void saveToDataFile(const MyString& filePath) override;
+	void loadFromDataFile(std::ifstream& ifs) override;
+	void saveInDataFile(std::ofstream& ofs) const override;
 
 
 	~Directory() override = default;

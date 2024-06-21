@@ -1,4 +1,22 @@
 #include "SystemObjectContainer.h"
+#include "SystemObjectFactory.h"
+
+static unsigned getNextPowerOfTwo(unsigned n)
+{
+	unsigned powerOfTwo = 1;
+
+	while (powerOfTwo <= n)
+	{
+		powerOfTwo <<= 1;
+	}
+
+	return powerOfTwo;
+}
+
+static size_t getCapacityNeeded(size_t size)
+{
+	return std::max(getNextPowerOfTwo(size), 8u);
+}
 
 void SystemObjectContainer::resize(size_t newCapacity)
 {
@@ -138,10 +156,37 @@ SystemObject* SystemObjectContainer::operator[](size_t index)
 {
 	if (index >= this->size)
 	{
-		throw std::out_of_range("Index in SystemObjectConatiner::operator[] is inbvalid. ");
+		throw std::out_of_range("Index in SystemObjectConatiner::operator[] is invalid. ");
 	}
 
 	return this->data[index];
+}
+
+void SystemObjectContainer::loadFromDataFile(std::ifstream& ifs)
+{
+	free();
+
+	ifs.read(reinterpret_cast<char*>(&size), sizeof(this->size));
+
+	this->capacity = getCapacityNeeded(this->size);
+
+	this->data = new SystemObject* [this->capacity];
+
+	SystemObjectFactory factory = SystemObjectFactory::getInstance();
+	for (size_t i = 0; i < this->size; i++)
+	{
+		this->data[i] = factory.createObject(ifs);
+	}
+}
+
+void SystemObjectContainer::saveInDataFile(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
+	for (size_t i = 0; i < this->size;i++)
+	{
+		this->data[i]->saveToDataFile(ofs);
+	}
 }
 
 size_t SystemObjectContainer::getSize() const

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 
 namespace GLOBAL_CONSTS_DATE
 {
@@ -35,6 +36,9 @@ public:
 	void setDate(unsigned day, unsigned month, unsigned year);
 	bool isLeapYear() const;
 	unsigned getMaxDaysInMonth() const;
+
+	void loadFromDataFile(std::ifstream& ifs);
+	void saveInDataFile(std::ofstream& ofs) const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Date& date);
 };

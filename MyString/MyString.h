@@ -50,8 +50,11 @@ public:
 
 	MyString subStr(size_t from, size_t length) const;
 
-	void readFromBinaryStream(std::ifstream& ifs);
-	void readFromBinaryFile(const MyString& filePath);
+	void readFromDataFile(std::ifstream& ifs);
+	void readFromDataFile(const MyString& filePath);
+
+	void writeInDataFile(std::ofstream& ofs) const;
+	void writeInDataFile(const MyString& filePath) const;
 };
 
 bool operator==(const MyString& lhs, const MyString& rhs);

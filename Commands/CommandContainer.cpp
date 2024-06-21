@@ -144,6 +144,15 @@ Command* CommandContainer::operator[](size_t index)
 	return this->data[index];
 }
 
+void CommandContainer::wrireCommandsInStream(std::ostream& os) const
+{
+	for (size_t i = 0; i < this->size; i++)
+	{
+		this->data[i]->writeInTextFile(os);
+		os << std::endl;
+	}
+}
+
 size_t CommandContainer::getSize() const
 {
 	return this->size;

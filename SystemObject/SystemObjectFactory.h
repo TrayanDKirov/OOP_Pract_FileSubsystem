@@ -1,28 +1,23 @@
 #pragma once
+#include <iostream>
 #include <fstream>
-#include "Directory.h"
-#include "File/LinkFile.h"
-#include "File/ScriptFile.h"
-#include "File/TextFile.h"
+#include "SystemObject.h"
 
-enum class TypeOfObject : unsigned char
-{
-	directory = 0,
-	file = 1
-};
+class Directory;
+class File;
 
 class SystemObjectFactory
 {
 
-
 	SystemObjectFactory() = default;
 
-	Directory* createDirectory(std::ifstream& ifs) const;
-	File* createFile(std::ifstream& ifs) const;
+	Directory* createDirectory(std::ifstream& ifs);
+	File* createFile(std::ifstream& ifs);
 
 public:
 
-	SystemObject* createObject(std::ifstream& ifs) const;
+	SystemObject* create(std::ifstream& ifs);
 
 	static SystemObjectFactory& getInstance();
+
 };

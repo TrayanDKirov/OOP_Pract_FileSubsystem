@@ -69,6 +69,24 @@ unsigned Time::getHours() const
 	return this->hours;
 }
 
+void Time::loadFromDataFile(std::ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*>(&seconds), sizeof(seconds));
+
+	ifs.read(reinterpret_cast<char*>(&minutes), sizeof(minutes));
+
+	ifs.read(reinterpret_cast<char*>(&hours), sizeof(hours));
+}
+
+void Time::saveInDataFile(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&seconds), sizeof(seconds));
+
+	ofs.write(reinterpret_cast<const char*>(&minutes), sizeof(minutes));
+
+	ofs.write(reinterpret_cast<const char*>(&hours), sizeof(hours));
+}
+
 std::ostream& operator<<(std::ostream& os, const Time& time)
 {
 	return os << time.hours << ':' << time.minutes << ':' << time.seconds;

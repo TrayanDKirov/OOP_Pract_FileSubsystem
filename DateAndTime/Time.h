@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <fstream>
 
 namespace GLOBAL_CONSTS_TIME
 {
@@ -35,6 +36,9 @@ public:
 	unsigned getSeconds() const;
 	unsigned getMinutes() const;
 	unsigned getHours() const;
+
+	void loadFromDataFile(std::ifstream& ifs);
+	void saveInDataFile(std::ofstream& ofs) const;
 
 	friend std::ostream& operator<<(std::ostream& os, const Time& time);
 };

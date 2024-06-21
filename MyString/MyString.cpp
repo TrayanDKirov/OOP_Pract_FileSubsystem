@@ -244,29 +244,51 @@ MyString MyString::subStr(size_t from, size_t length) const
 	return result;
 }
 
-void MyString::readFromBinaryFile(const MyString& filePath)
+void MyString::readFromDataFile(const MyString& filePath)
 {
 	std::ifstream file(filePath.c_str(), std::ios::binary | std::ios::in);
 	if (!file.is_open())
 	{
-		throw std::runtime_error("File did not open(In MyString::readFromBinaryFile()). ");
+		throw std::runtime_error("File did not open(In MyString::readFromDataFile()). ");
 	}
 
-	readFromBinaryStream(file);
+	readFromDataFile(file);
 	file.close();
 }
 
 
-void MyString::readFromBinaryStream(std::ifstream& ifs)
+void MyString::readFromDataFile(std::ifstream& ifs)
 {
 	size_t sizeToRead;
-	ifs.read(reinterpret_cast<char*>(sizeToRead), sizeof(sizeToRead));
+	ifs.read(reinterpret_cast<char*>(&sizeToRead), sizeof(sizeToRead));
+
+	this->len = 0;
 	resize(getCapacityNeeded(sizeToRead));
 
-	ifs.read(reinterpret_cast<char*>(this->data), sizeToRead * sizeof(char));
+	ifs.read(reinterpret_cast<char*>(data), sizeToRead * sizeof(char));
 
 	this->len = sizeToRead;
 	this->data[this->len] = '\0';
+}
+
+
+void MyString::writeInDataFile(const MyString& filePath) const
+{
+	std::ofstream file(filePath.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
+	if (!file.is_open())
+	{
+		throw std::runtime_error("File did not open(In MyString::readFromDataFile()). ");
+	}
+
+	writeInDataFile(file);
+	file.close();
+}
+
+void MyString::writeInDataFile(std::ofstream& ofs) const 
+{
+	ofs.write(reinterpret_cast<const char*>(&len), sizeof(len));
+
+	ofs.write(reinterpret_cast<const char*>(data), len * sizeof(char));
 }
 
 bool operator==(const MyString& lhs, const MyString& rhs)

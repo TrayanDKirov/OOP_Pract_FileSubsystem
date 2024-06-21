@@ -113,6 +113,24 @@ unsigned Date::getYear() const
 	return this->year;
 }
 
+void Date::loadFromDataFile(std::ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*>(&day), sizeof(day));
+
+	ifs.read(reinterpret_cast<char*>(&month), sizeof(month));
+
+	ifs.read(reinterpret_cast<char*>(&year), sizeof(year));
+}
+
+void Date::saveInDataFile(std::ofstream& ofs) const
+{
+	ofs.write(reinterpret_cast<const char*>(&day), sizeof(day));
+
+	ofs.write(reinterpret_cast<const char*>(&month), sizeof(month));
+
+	ofs.write(reinterpret_cast<const char*>(&year), sizeof(year));
+}
+
 std::ostream& operator<<(std::ostream& os, const Date& date)
 {
 	return os << date.day << '.' << date.month << '.' << date.year;

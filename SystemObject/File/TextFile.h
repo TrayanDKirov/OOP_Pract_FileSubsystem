@@ -3,9 +3,19 @@
 
 class TextFile : public File
 {
-	MyString pathToFile;
+
 	MyString dataFromFile;
 
+	void saveFile(std::ostream& os) const;
+	void saveFile() const;
+
 public:
+
+	void loadFromDataFile(std::ifstream& ifs) override;
+	void saveInDataFile(std::ofstream& ofs) const override;
+
+	SystemObject* clone() const;
+
+	~TextFile() override = default;
 
 };

@@ -16,8 +16,8 @@ public:
 
 	virtual SystemObject* clone() const = 0;
 
-	virtual void loadFromDataFile(const MyString& filePath) = 0;
-	virtual void saveToDataFile(const MyString& filePath) = 0;
+	virtual void loadFromDataFile(std::ifstream& ifs) = 0;
+	virtual void saveInDataFile(std::ofstream& ofs) const = 0;
 
 	virtual ~SystemObject() = default;
 };

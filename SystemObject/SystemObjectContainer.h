@@ -1,4 +1,5 @@
 #pragma once
+#include <fstream>
 #include "SystemObject.h"
 
 class SystemObjectContainer
@@ -31,6 +32,9 @@ public:
 
 	const SystemObject* operator[](size_t index) const;
 	SystemObject* operator[](size_t index);
+
+	void loadFromDataFile(std::ifstream& ifs);
+	void saveInDataFile(std::ofstream& ofs) const;
 
 	size_t getSize() const;
 	size_t getCapacity() const;
