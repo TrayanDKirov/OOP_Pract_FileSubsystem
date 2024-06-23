@@ -215,13 +215,15 @@ std::ostream& operator<<(std::ostream& os, const MyString& str)
 
 std::istream& operator>>(std::istream& is, MyString& str)
 {
-	char buffer[GLOBAL_CONSTS::MAX_BUFFER_SIZE];
-	is >> buffer;
+	char buffer[GLOBAL_CONSTS_MYSTRING::MAX_BUFFER_SIZE];
+	is.getline(buffer, GLOBAL_CONSTS_MYSTRING::MAX_BUFFER_SIZE, '\n');
 
 	size_t bufferSize = std::strlen(buffer);
-	if (bufferSize >= str.capacity)
+	size_t capacityNeeded = getCapacityNeeded(bufferSize);
+	if (capacityNeeded != str.capacity)
 	{
-		str.resize(getCapacityNeeded(bufferSize));
+		str.len = 0;
+		str.resize(capacityNeeded);
 	}
 
 	std::strcpy(str.data, buffer);
@@ -249,7 +251,7 @@ void MyString::readFromDataFile(const MyString& filePath)
 	std::ifstream file(filePath.c_str(), std::ios::binary | std::ios::in);
 	if (!file.is_open())
 	{
-		throw std::runtime_error("File did not open(In MyString::readFromDataFile()). ");
+		throw std::runtime_error("File did not open in MyString::readFromDataFile(). ");
 	}
 
 	readFromDataFile(file);
@@ -262,8 +264,12 @@ void MyString::readFromDataFile(std::ifstream& ifs)
 	size_t sizeToRead;
 	ifs.read(reinterpret_cast<char*>(&sizeToRead), sizeof(sizeToRead));
 
-	this->len = 0;
-	resize(getCapacityNeeded(sizeToRead));
+	size_t capacityNeeded = getCapacityNeeded(sizeToRead);
+	if (capacityNeeded != this->capacity)
+	{
+		this->len = 0;
+		resize(capacityNeeded);
+	}
 
 	ifs.read(reinterpret_cast<char*>(data), sizeToRead * sizeof(char));
 
@@ -277,7 +283,7 @@ void MyString::writeInDataFile(const MyString& filePath) const
 	std::ofstream file(filePath.c_str(), std::ios::binary | std::ios::out | std::ios::trunc);
 	if (!file.is_open())
 	{
-		throw std::runtime_error("File did not open(In MyString::readFromDataFile()). ");
+		throw std::runtime_error("File did not open in MyString::readFromDataFile(). ");
 	}
 
 	writeInDataFile(file);

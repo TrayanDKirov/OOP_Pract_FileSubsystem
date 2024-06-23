@@ -4,11 +4,7 @@
 
 class ScriptFile : public File
 {
-
 	CommandContainer arrOfCommands;
-
-	void saveFile(std::ostream& os) const;
-	void saveFile() const;
 
 public:
 

@@ -33,8 +33,15 @@ public:
 	const SystemObject* operator[](size_t index) const;
 	SystemObject* operator[](size_t index);
 
-	void loadFromDataFile(std::ifstream& ifs);
+	void loadFromDataFile(std::ifstream& ifs, Directory* parentDirectory);
 	void saveInDataFile(std::ofstream& ofs) const;
+
+	SystemObject* getObjectByName(const MyString& name);
+	size_t getIndexOfObject(SystemObject* item) const;
+
+	void setItem(const MyString& name, const DateAndTime& date, size_t index);
+	void setItem(const MyString& name, const DateAndTime& creationDate, const DateAndTime& modificationDate, size_t index);
+	void printInfoAboutObjects(std::ostream& os) const;
 
 	size_t getSize() const;
 	size_t getCapacity() const;

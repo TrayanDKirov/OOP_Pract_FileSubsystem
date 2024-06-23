@@ -147,7 +147,7 @@ const SystemObject* SystemObjectContainer::operator[](size_t index) const
 {
 	if (index >= this->size)
 	{
-		throw std::out_of_range("Index in SystemObjectConatiner::operator[] is inbvalid. ");
+		throw std::out_of_range("Index in SystemObjectConatiner::operator[] is invalid. ");
 	}
 
 	return this->data[index];
@@ -162,7 +162,7 @@ SystemObject* SystemObjectContainer::operator[](size_t index)
 	return this->data[index];
 }
 
-void SystemObjectContainer::loadFromDataFile(std::ifstream& ifs)
+void SystemObjectContainer::loadFromDataFile(std::ifstream& ifs, Directory* parentDirectory)
 {
 	free();
 
@@ -175,7 +175,9 @@ void SystemObjectContainer::loadFromDataFile(std::ifstream& ifs)
 	SystemObjectFactory factory = SystemObjectFactory::getInstance();
 	for (size_t i = 0; i < this->size; i++)
 	{
-		this->data[i] = factory.createObject(ifs);
+		this->data[i] = factory.create(ifs);
+
+		this->data[i]->setParentDirecory(parentDirectory);
 	}
 }
 
@@ -185,7 +187,53 @@ void SystemObjectContainer::saveInDataFile(std::ofstream& ofs) const
 
 	for (size_t i = 0; i < this->size;i++)
 	{
-		this->data[i]->saveToDataFile(ofs);
+		this->data[i]->saveInDataFile(ofs);
+	}
+}
+
+SystemObject* SystemObjectContainer::getObjectByName(const MyString& name)
+{
+	for (size_t i = 0; i < this->size; i++)
+	{
+		if (name == this->data[i]->getName())
+		{
+			return this->data[i];
+		}
+	}
+
+	throw std::invalid_argument("File does not exit");
+}
+
+size_t SystemObjectContainer::getIndexOfObject(SystemObject* item) const
+{
+	for (size_t i = 0; i < this->size; i++)
+	{
+		if (this->data[i] == item)
+		{
+			return i;
+		}
+	}
+	throw std::invalid_argument("Item not in directory");
+}
+
+void SystemObjectContainer::setItem(const MyString& name, const DateAndTime& date, size_t index)
+{
+	setItem(name, date, date, index);
+}
+
+void SystemObjectContainer::setItem(const MyString& name, const DateAndTime& creationDate, const DateAndTime& modificationDate, size_t index)
+{
+	this->data[index]->setName(name);
+	this->data[index]->setCreationDate(creationDate);
+	this->data[index]->setModificationDate(modificationDate);
+}
+
+void SystemObjectContainer::printInfoAboutObjects(std::ostream& os) const
+{
+	for (size_t i = 0; i < this->size; i++)
+	{
+		this->data[i]->printInfo(os);
+		os << std::endl;
 	}
 }
 

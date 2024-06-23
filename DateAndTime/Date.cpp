@@ -1,6 +1,6 @@
 #include "Date.h"
 
-bool Date::monthHas31Days(unsigned mont) const
+bool Date::monthHas31Days(unsigned month) const
 {
 	switch (month)
 	{

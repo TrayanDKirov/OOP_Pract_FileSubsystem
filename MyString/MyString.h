@@ -3,7 +3,7 @@
 #include <fstream>
 #pragma warning(disable:4996)
 
-namespace GLOBAL_CONSTS
+namespace GLOBAL_CONSTS_MYSTRING
 {
 	constexpr size_t MAX_BUFFER_SIZE = 1024;
 }

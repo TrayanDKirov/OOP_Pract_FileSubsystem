@@ -1,13 +1,42 @@
+#pragma once
 #include "MyString/MyString.h"
 
-enum class TypeOfObject : unsigned char
+namespace GLOBAL_CONSTS
 {
-	directory = 0,
-	file = 1,
-	textFile = 2,
-	scriptFile = 3,
-	linkFile = 4
-};
+	constexpr size_t NUMBER_OF_COMMANDS = 11;
+	const size_t LEN_OF_SCRIPT_EXT = 3;
+	const size_t LEN_OF_TEXT_EXT = 3;
+	const char COMMAND_SEP = ' ';
+
+	const char SEP_IN_PATH = '/';
+}
+
+namespace EnumClasses
+{
+	enum class TypeOfCommand : unsigned char
+	{
+		cd,
+		echo,
+		exec,
+		exit,
+		find,
+		ls,
+		mkdir,
+		pwd,
+		rm,
+		rmdir,
+		touch
+	};
+
+	enum class TypeOfObject : unsigned char
+	{
+		directory,
+		file,
+		textFile,
+		scriptFile,
+		linkFile
+	};
+}
 
 struct FileExtentions
 {
@@ -16,9 +45,9 @@ struct FileExtentions
 
 	FileExtentions()
 	{
-		this->arr[0] = "txt";
+		this->arr[0] = ".txt";
 		this->arr[1] = ".sh";
-		this->arr[2] = "lnk";
+		this->arr[2] = ".lnk";
 	}
 
 	const MyString& operator[](size_t index) const
@@ -41,18 +70,18 @@ struct FileExtentions
 		return this->arr[index];
 	}
 
-	TypeOfObject getTypeOfFile(const MyString& ext) const
+	EnumClasses::TypeOfObject getTypeOfFile(const MyString& ext) const
 	{ 
 		for (size_t i = 0; i < this->numberOfExtentions; i++)
 		{
 			if (arr[i] == ext)
 			{
-				return (TypeOfObject)(i + (size_t)(TypeOfObject::textFile));
+				return (EnumClasses::TypeOfObject)(i + (size_t)(EnumClasses::TypeOfObject::textFile));
 			}
 		}
 
-		throw std::logic_error("Invalid extention of file");
+		throw std::logic_error("Invalid extention of file. FileExtentions::getTypeOfFile");
 	}
 
-} fileExtentions;
+};
 

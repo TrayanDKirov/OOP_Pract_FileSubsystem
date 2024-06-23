@@ -1,4 +1,5 @@
 #include "CommandContainer.h"
+#include "CommandFactory.h"
 
 void CommandContainer::resize(size_t newCapacity)
 {
@@ -144,12 +145,24 @@ Command* CommandContainer::operator[](size_t index)
 	return this->data[index];
 }
 
-void CommandContainer::wrireCommandsInStream(std::ostream& os) const
+void CommandContainer::wrireInDataFile(std::ofstream& ofs) const
 {
+	ofs.write(reinterpret_cast<const char*>(&size), sizeof(size));
+
 	for (size_t i = 0; i < this->size; i++)
 	{
-		this->data[i]->writeInTextFile(os);
-		os << std::endl;
+		this->data[i]->saveInDataFile(ofs);
+	}
+}
+
+void CommandContainer::readFromDataFile(std::ifstream& ifs)
+{
+	ifs.read(reinterpret_cast<char*>(&size), sizeof(size));
+	
+	CommandFactory factory = CommandFactory::getInstance();
+	for (size_t i = 0; i < this->size; i++)
+	{
+		this->data[i] = factory.create(ifs);
 	}
 }
 

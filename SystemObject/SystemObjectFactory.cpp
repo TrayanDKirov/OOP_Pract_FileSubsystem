@@ -3,59 +3,78 @@
 #include "File/LinkFile.h"
 #include "File/ScriptFile.h"
 #include "File/TextFile.h"
-#include "../Utils.h"
 
-Directory* SystemObjectFactory::createDirectory(std::ifstream& ifs)
+File* SystemObjectFactory::createFile(EnumClasses::TypeOfObject type) const
 {
-	Directory* result = new Directory();
-
-	result->loadFromDataFile(ifs);
-	return result;
-}
-
-File* SystemObjectFactory::createFile(std::ifstream& ifs)
-{
-	MyString pathToFile;
-	pathToFile.readFromDataFile(ifs);
-
-	MyString ext = pathToFile.subStr(pathToFile.getLen() - 3, 3);
-	TypeOfObject typeOfFile = fileExtentions.getTypeOfFile(ext);
-
-	File* result;
-	switch (typeOfFile)
+	switch (type)
 	{
-	case TypeOfObject::textFile: result = static_cast<File*>(new TextFile());
+	case EnumClasses::TypeOfObject::textFile: return static_cast<File*>(new TextFile());
 		break;
-	case TypeOfObject::scriptFile: result = static_cast<File*>(new ScriptFile());
+	case EnumClasses::TypeOfObject::scriptFile: return static_cast<File*>(new ScriptFile());
 		break;
-	case TypeOfObject::linkFile: result = static_cast<File*>(new LinkFile());
+	case EnumClasses::TypeOfObject::linkFile: return static_cast<File*>(new LinkFile());
 		break;
 	default:
+		throw std::logic_error("Invalid type of object in SystemObjectFactory::create()");
 		break;
 	}
-
-	result->setPathToFile(pathToFile);
-	result->loadFromDataFile(ifs);
-
-	return result;
 }
 
-SystemObject* SystemObjectFactory::create(std::ifstream& ifs)
+File* SystemObjectFactory::createFileByName(const MyString& nameOfFile) const
 {
-	TypeOfObject type;
+	EnumClasses::TypeOfObject type;
+
+	const char* ptr = nameOfFile.c_str();
+	const char* ptrToMove = nameOfFile.c_str() + (nameOfFile.getLen() - 1);
+	size_t counter = 1;
+
+	MyString ext;
+	while (ptr != ptrToMove)
+	{
+		if (*ptrToMove == '.')
+		{
+			ext = nameOfFile.subStr(ptrToMove - ptr, counter);
+		}
+
+		counter++;
+		ptrToMove--;
+	}
+
+	if (ext == "")
+	{
+		throw std::logic_error("File has no extention. In SystemObjectFactory::createFileByName()");
+	}
+
+	FileExtentions fileExtentions;
+	type = fileExtentions.getTypeOfFile(ext);
+
+	return createFile(type);
+}
+
+SystemObject* SystemObjectFactory::create(EnumClasses::TypeOfObject type) const
+{
+	switch (type)
+	{
+	case EnumClasses::TypeOfObject::directory: return static_cast<SystemObject*>(new Directory());
+		break;
+	default:
+		return static_cast<SystemObject*>(createFile(type));
+		break;
+	}
+}
+
+SystemObject* SystemObjectFactory::create(std::ifstream& ifs) const
+{
+	EnumClasses::TypeOfObject type;
 
 	ifs.read(reinterpret_cast<char*>(&type), sizeof(type));
 
-	switch (type)
-	{
-	case TypeOfObject::directory: return static_cast<SystemObject*>(createDirectory(ifs));
-		break;
-	case TypeOfObject::file: return static_cast<SystemObject*>(createFile(ifs));
-		break;
-	default:
-		break;
-	}
+	SystemObject* result = create(type);
+
+	result->loadFromDataFile(ifs);
+	return result;
 }
+
 
 SystemObjectFactory& SystemObjectFactory::getInstance()
 {

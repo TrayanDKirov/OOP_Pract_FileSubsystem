@@ -2,21 +2,21 @@
 #include <iostream>
 #include <fstream>
 #include "SystemObject.h"
-
-class Directory;
-class File;
+#include "../Utils.h"
+#include "File/File.h"
 
 class SystemObjectFactory
 {
 
 	SystemObjectFactory() = default;
 
-	Directory* createDirectory(std::ifstream& ifs);
-	File* createFile(std::ifstream& ifs);
+	File* createFile(EnumClasses::TypeOfObject type) const;
 
 public:
 
-	SystemObject* create(std::ifstream& ifs);
+	File* createFileByName(const MyString& nameOfFile) const;
+	SystemObject* create(EnumClasses::TypeOfObject type) const;
+	SystemObject* create(std::ifstream& ifs) const;
 
 	static SystemObjectFactory& getInstance();
 

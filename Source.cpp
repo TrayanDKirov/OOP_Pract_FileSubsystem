@@ -1,17 +1,24 @@
 #include <iostream>
+#include "Sysytem/FileSubsystem.h"
 
 int main()
 {
+	FileSubsystem system;
+
 	try
 	{
-
+		system.run("data.dat");
 	}
-	catch (std::invalid_argument& ex)
+	catch (std::exception& ex)
 	{
-		std::cout << ex.what() << std::endl;
+		std::cout << ex.what();
+	}
+	catch (const char* str)
+	{
+		std::cout << str;
 	}
 	catch (...)
 	{
-		std::cout << "Unknown exeption thrown. " << std::endl;
+
 	}
 }

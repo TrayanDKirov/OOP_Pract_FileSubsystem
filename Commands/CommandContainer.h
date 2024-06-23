@@ -32,7 +32,8 @@ public:
 	const Command* operator[](size_t index) const;
 	Command* operator[](size_t index);
 
-	void wrireCommandsInStream(std::ostream& os) const;
+	void wrireInDataFile(std::ofstream& ofs) const;
+	void readFromDataFile(std::ifstream& ifs);
 
 	size_t getSize() const;
 	size_t getCapacity() const;

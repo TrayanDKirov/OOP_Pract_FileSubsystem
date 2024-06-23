@@ -7,18 +7,22 @@ SystemObject* Directory::clone() const
 
 void Directory::loadFromDataFile(std::ifstream& ifs)
 {
-	this->name.readFromDataFile(ifs);
-	this->creationDate.loadFromDataFile(ifs);
-	this->modificationDate.loadFromDataFile(ifs);
+	SystemObject::loadData(ifs);
 
-	this->arrOfSystemObjects.loadFromDataFile(ifs);
+	SystemObjectContainer::loadFromDataFile(ifs, this);
 }
 
 void Directory::saveInDataFile(std::ofstream& ofs) const
 {
-	this->name.writeInDataFile(ofs);
-	this->creationDate.saveInDataFile(ofs);
-	this->modificationDate.saveInDataFile(ofs);
+	EnumClasses::TypeOfObject type = EnumClasses::TypeOfObject::directory;
+	ofs.write(reinterpret_cast<const char*>(&type), sizeof(type));
 
-	this->arrOfSystemObjects.saveInDataFile(ofs);
+	SystemObject::saveData(ofs);
+
+	SystemObjectContainer::saveInDataFile(ofs);
+}
+
+void Directory::printInfoOfObjects(std::ostream& os) const
+{
+	SystemObjectContainer::printInfoAboutObjects(os);
 }
